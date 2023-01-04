@@ -35,8 +35,8 @@ public class AccountController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Account account) {
-        accountService.update(account);
+    public Account update(@RequestBody Account account) {
+         return accountService.update(account);
     }
 
     @DeleteMapping(value = "/{id}")

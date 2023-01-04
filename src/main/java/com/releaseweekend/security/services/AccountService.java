@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -36,22 +38,24 @@ public class AccountService {
         return "Account created for: " + account.getOwner();
     }
 
-    public void update(Account newAccount) {
-        accounts.stream()
-                .filter(account -> account.getId().equals(newAccount.getId()))
-                .map(account -> {
-                    account.setId(newAccount.getId());
-                    account.setIban(newAccount.getIban());
-                    account.setAmount(newAccount.getAmount());
-                    account.setOwner(newAccount.getOwner());
+    public Account update(Account newAccount) {
+        return accounts.stream()
+                .filter(a -> a.getId().equals(newAccount.getId()))
+                .map(a -> {
+                    a.setId(newAccount.getId());
+                    a.setIban(newAccount.getIban());
+                    a.setAmount(newAccount.getAmount());
+                    a.setOwner(newAccount.getOwner());
 
-                    return account;
-                });
+                    return a;
+                }).findFirst()
+                .orElseThrow(() -> new RuntimeException("Account not found."));
     }
 
     public void deleteById(Long id) {
         accounts = accounts.stream()
                 .filter(account -> !account.getId().equals(id))
-                .toList();
+                .collect(Collectors.toList());
+
     }
 }
